@@ -122,7 +122,7 @@ app.put('/api/answers/:id', [
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({errors: errors.array()});
-  }
+  }vcccccwx
 
   const answerToUpdate = req.body;
   const answerId = req.params.id;

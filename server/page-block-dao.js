@@ -1,6 +1,6 @@
 /* Data Access Object (DAO) module for accessing Pages */
 const sqlite = require('sqlite3');
-const { Page } = require('./PageAndBlockModels');
+const { Page, Block } = require('./PageAndBlockModels');
 
 // open the database
 const db = new sqlite.Database('cmsmall.sqlite', (err) => {
@@ -16,7 +16,7 @@ exports.listPages = () => {
       if (err) {
         reject(err);
       }
-      const pages = rows.map((p) => new Page(p.id, p.author, p.date, p.publication_date));
+      const pages = rows.map((p) => new Page(p.id, p.title, p.author, p.date, p.publication_date));
       resolve(pages);
     });
   });
@@ -32,7 +32,7 @@ exports.getPage = (id) => {
         if (row == undefined)
           resolve({error: 'Page not found.'}); 
         else {
-          const page = new Page(p.id, p.author, p.date, p.publication_date);
+          const page = new Page(p.id, p.title, p.author, p.date, p.publication_date);
           resolve(page);
         }
       });
@@ -42,8 +42,8 @@ exports.getPage = (id) => {
   // add a new page
 exports.addPage = (page) => {
     return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO page(author, date, publication_date) VALUES (?, DATE(?), ?)';
-      db.run(sql, [page.author, page.date, page.publication_date], function(err) {
+      const sql = 'INSERT INTO page(title, author, date, publication_date) VALUES (?, DATE(?), ?)';
+      db.run(sql, [page.title, page.author, page.date, page.publication_date], function(err) {
         if(err) reject(err);
         else resolve(this.lastID);
       });
@@ -54,8 +54,8 @@ exports.addPage = (page) => {
   // update an existing page
 exports.updatePage = (page, pageId) => {
     return new Promise ((resolve, reject) => {
-      const sql = 'UPDATE page SET publication_date=? WHERE id=?';
-      db.run(sql, [page.publication_date, pageId], function(err) {
+      const sql = 'UPDATE page SET title=?, publication_date=? WHERE id=?';
+      db.run(sql, [page.title, page.publication_date, pageId], function(err) {
         if(err) {
           console.log(err);
           reject(err);

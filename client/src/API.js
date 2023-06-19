@@ -1,11 +1,12 @@
-import { Page, Block } from './PageAndBlockModels.js';
+import { Page } from './PageAndBlockModels.js';
+import { Block } from './PageAndBlockModels.js';
 const SERVER_URL = 'http://localhost:3001';
 
 const getPages = async () => {
   const response = await fetch(SERVER_URL + '/api/pages');
   if(response.ok) {
     const pagesJson = await response.json();
-    return pagesJson.map(p => new Page(p.id, p.author, p.date, p.publication_date));
+    return pagesJson.map(p => new Page(p.id, p.title, p.author, p.date, p.publication_date));
   }
   else
     throw new Error('Internal server error');
@@ -26,20 +27,6 @@ const addBlock = async (block, pageId) => {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({type: block.type, text: block.text})
-  });
-
-  if(!response.ok) {
-    const errMessage = await response.json();
-    throw errMessage;
-  }
-  else return null;
-}
-
-const updateAnswer = async (answer) => {
-  const response = await fetch(`${SERVER_URL}/api/answers/${answer.id}`, {
-    method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({text: answer.text, author: answer.name, score: answer.score, date: answer.date.format('YYYY-MM-DD')})
   });
 
   if(!response.ok) {
@@ -89,5 +76,5 @@ const logOut = async() => {
     return null;
 }
 
-const API = {getQuestions, getAnswers, vote, addAnswer, updateAnswer, logIn, logOut, getUserInfo};
+const API = {getPages, getBlock, addBlock, logIn, logOut, getUserInfo};
 export default API;

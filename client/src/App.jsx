@@ -1,17 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Alert } from 'react-bootstrap';
-import SingleQuestion from './components/SingleQuestionComponent';
-import NavHeader from './components/NavbarComponents';
+import NavHeader from './components/NavbarComponent';
 import NotFound from './components/NotFoundComponent';
-import AnswerForm from './components/AnswerForm';
 import PageList from './components/PageListComponent';
+import SinglePage from './components/SinglePageComponent';
+import BlockForm from './components/BlockFormComponent';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import API from './API';
-import { LoginForm } from './components/AuthComponents';
+import { LoginForm } from './components/AuthComponent';
 
 function App() {
-  const [questions, setQuestions] = useState([]);
+  const [pages, setPages] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -19,9 +19,9 @@ function App() {
     // get all the pages from API
     const getPages = async () => {
       const pages = await API.getPages();
-      setQuestions(questions);
+      setPages(pages);
     }
-    getQuestions();
+    getPages();
   }, []);
 
   useEffect(() => {
@@ -53,16 +53,9 @@ function App() {
   return (
     <BrowserRouter>
         <Routes>
-          {/* 
-          - / (index) -> all the questions
-          - /questions/:questionId -> the page with the :questionId question info and its answers
-          - /questions/:questionId/addAnswer -> the form to add a new answer
-          - /questions/:questionId/editAnswer/:answerId -> the form to update the :answerId answer
-          - * -> not found
-          */}
           <Route element={
             <>
-              <NavHeader questions={questions} loggedIn={loggedIn} handleLogout={handleLogout}/>
+              <NavHeader pages={pages} loggedIn={loggedIn} handleLogout={handleLogout}/>
               <Container fluid className="mt-3">
                 {message && <Row>
                   <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert>
@@ -72,12 +65,12 @@ function App() {
             </>} >
             <Route index 
               element={ <PageList pages={pages}/> } />
-            <Route path='questions/:questionId' 
-              element={<SingleQuestion questions={questions} loggedIn={loggedIn}/> } />
-            <Route path='questions/:questionId/addAnswer' 
-              element={<AnswerForm />} />
-            <Route path='questions/:questionId/editAnswer/:answerId' 
-              element={<AnswerForm />} />
+            <Route path='pages/:pageId' 
+              element={<SinglePage pages={pages} loggedIn={loggedIn}/> } />
+            <Route path='pages/:pageId/addBlock' 
+              element={<BlockForm />} />
+            <Route path='pages/:pageId/editBlock/:blockId' 
+              element={<BlockForm />} />
             <Route path='*' element={ <NotFound/> } />
             <Route path='/login' element={
               loggedIn ? <Navigate replace to='/' /> : <LoginForm login={handleLogin} />

@@ -14,11 +14,12 @@ exports.getUser = (email, password) => {
         resolve(false); 
       }
       else {
-        const user = {id: row.id, username: row.email, name: row.name};
+        const user = {id: row.id, username: row.email, name: row.name, role: row.role};
         
         crypto.scrypt(password, row.salt, 32, function(err, hashedPassword) {
           if (err) reject(err);
-          if(!crypto.timingSafeEqual(Buffer.from(row.password, 'hex'), hashedPassword))
+          console.log(row.password, Buffer.from(row.password,'hex'), hashedPassword, hashedPassword.toString('hex'));
+          if(!crypto.timingSafeEqual(Buffer.from(row.password,'hex'), hashedPassword))
             resolve(false);
           else
             resolve(user);
@@ -39,7 +40,7 @@ exports.getUserById = (id) => {
         resolve({error: 'User not found!'}); 
       }
       else {
-        const user = {id: row.id, username: row.email, name: row.name};
+        const user = {id: row.id, username: row.email, name: row.name, role: row.role};
         resolve(user);
       }
     });
