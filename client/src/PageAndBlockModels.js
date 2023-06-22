@@ -1,7 +1,5 @@
 'use strict';
 
-/* Same of week 09, but 1) with require() instead of import and 2) without any internal methods */
-
 import dayjs from 'dayjs';
 
 function Block(id, type, text) {
@@ -37,8 +35,6 @@ function Page(id, title, author, date, publication_date) {
     );
   }
 
-  /* Method to enable the proper serialization to string of the dayjs object. 
-  Needed for the useLocation hook of react router when passing the answer to the edit form (AnswerComponent and AnswerForm). */
   this.serialize = () => {
     return {id: this.id, title: this.title, author: this.author, date: this.date.format('YYYY-MM-DD'), publication_date: this.publication_date.format('YYYY-MM-DD'), blocks: this.blocks};
   }

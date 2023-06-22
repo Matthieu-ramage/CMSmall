@@ -5,6 +5,7 @@ import NotFound from './components/NotFoundComponent';
 import PageList from './components/PageListComponent';
 import SinglePage from './components/SinglePageComponent';
 import BlockForm from './components/BlockFormComponent';
+import PageForm from './components/PageFormComponent';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import API from './API';
@@ -70,6 +71,10 @@ function App() {
             <Route path='pages/:pageId/addBlock' 
               element={<BlockForm />} />
             <Route path='pages/:pageId/editBlock/:blockId' 
+              element={<BlockForm />} />
+            <Route path='addPage' 
+              element={<PageForm />} />
+            <Route path='addPage/:pageId/addBlock' 
               element={<BlockForm />} />
             <Route path='*' element={ <NotFound/> } />
             <Route path='/login' element={

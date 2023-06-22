@@ -42,7 +42,7 @@ exports.getPage = (id) => {
   // add a new page
 exports.addPage = (page) => {
     return new Promise((resolve, reject) => {
-      const sql = 'INSERT INTO page(title, author, date, publication_date) VALUES (?, DATE(?), ?)';
+      const sql = 'INSERT INTO page(title, author, date, publication_date) VALUES (?, ?, DATE(?), DATE(?))';
       db.run(sql, [page.title, page.author, page.date, page.publication_date], function(err) {
         if(err) reject(err);
         else resolve(this.lastID);
@@ -68,7 +68,7 @@ exports.updatePage = (page, pageId) => {
  // delete an existing page
  exports.deletePage = (pageId) => {
   return new Promise ((resolve, reject) => {
-    const sql = 'DELETE page WHERE id=?';
+    const sql = 'DELETE FROM page WHERE id=?';
     db.run(sql, [pageId], function(err) {
       if(err) {
         console.log(err);

@@ -12,6 +12,36 @@ const getPages = async () => {
     throw new Error('Internal server error');
 }
 
+const addPage = async (page) => {
+  const response = await fetch(SERVER_URL + '/api/addPage', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title: page.title, author: page.author, 
+                          date: page.date.format('YYYY-MM-DD'), 
+                          publication_date: page.publication_date.format('YYYY-MM-DD')})
+  })
+  const id = await response.json();
+  if(response.ok) {
+    console.log(id);
+    return id;
+  } else {
+    throw id;
+  }
+}
+
+const deletePage = async (id) => {
+    const response = await fetch(SERVER_URL + '/api/deletePage', {
+      method: 'DELETE',
+      haeders: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: id})
+    })
+    if(!response.ok) {
+      const errMessage = await response.json();
+      throw errMessage;
+    }
+    else return null;
+}
+
 const getBlock = async (pageId) => {
   const response = await fetch(SERVER_URL + `/api/pages/${pageId}/blocks`);
   const blocksJson = await response.json();
@@ -25,6 +55,20 @@ const getBlock = async (pageId) => {
 const addBlock = async (block, pageId) => {
   const response = await fetch(`${SERVER_URL}/api/pages/${pageId}/blocks`, {
     method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({type: block.type, text: block.text})
+  });
+
+  if(!response.ok) {
+    const errMessage = await response.json();
+    throw errMessage;
+  }
+  else return null;
+}
+
+const updateBlock = async (block) => {
+  const response = await fetch(`${SERVER_URL}/api/editBlock/${block.id}`, {
+    method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({type: block.type, text: block.text})
   });
@@ -76,5 +120,5 @@ const logOut = async() => {
     return null;
 }
 
-const API = {getPages, getBlock, addBlock, logIn, logOut, getUserInfo};
+const API = {getPages, addPage, deletePage, getBlock, addBlock, updateBlock, logIn, logOut, getUserInfo};
 export default API;

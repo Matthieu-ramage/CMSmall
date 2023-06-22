@@ -11,6 +11,7 @@ function BlockForm(props) {
   const editableBlock = location.state;
 
   const [waiting, setWaiting] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
   const [id, setId] = useState(editableBlock ? editableBlock.id : -1);
   const [type, setType] = useState(editableBlock ? editableBlock.type : '');
   const [text, setText] = useState(editableBlock ? editableBlock.text : '');
@@ -20,11 +21,19 @@ function BlockForm(props) {
     // create a new block
     const block = new Block(id, type, text);
     setWaiting(true);
-    API.addBlock(block, pageId)
-        .then(() => navigate(`/page/${pageId}`));
-        //.catch() handle any errors from the server
-    
-    
+    if(editableBlock) {
+      API.updateBlock(block)
+        .then(() => navigate(`/pages/${pageId}`));
+    } else {
+      API.addBlock(block, pageId)
+          .then(() => navigate(`/pages/${pageId}`));
+    }
+  }
+
+  const handleSelectedType=(e)=>{
+    console.log("e.target.value", e.target.value);
+    setSelectedType(e.target.value);
+    console.log(selectedType);
   }
 
   return (
@@ -39,6 +48,7 @@ function BlockForm(props) {
           onChange={e => {
             console.log("e.target.value", e.target.value);
             setType(e.target.value);
+            handleSelectedType(e);
           }}>
           <option value="header">Header</option>
           <option value="text">Text</option>
@@ -47,11 +57,31 @@ function BlockForm(props) {
       </Form.Group>
       <Form.Group className='mb-3'>
         <Form.Label>Text</Form.Label>
-        <Form.Control type="text" required={true} value={text} onChange={(event) => setText(event.target.value)}></Form.Control>
+        <div>
+          {selectedType === "image"
+              ? <Form.Control
+                  as="select"
+                  value={text}
+                  onChange={e => {
+                    console.log("e.target.value", e.target.value);
+                    setText(e.target.value);
+                  }}>
+                  <option value="nodejs">NodejsLogo</option>
+                  <option value="person">PersonLogo</option>
+                  <option value="option">OptionLogo</option>
+                  <option value="waiting">WaitingLogo</option>
+                </Form.Control>
+              : <Form.Control type="text" required={true} value={text} onChange={(event) => setText(event.target.value)}></Form.Control>
+        }
+          
+        </div>
       </Form.Group>
       
-    <><Button variant="primary" type="submit" disabled={waiting}>Add</Button> <Link to='..' relative='path' className='btn btn-danger'>Cancel</Link></>
-      
+    
+    {editableBlock ? 
+        <><Button variant="primary" type="submit">Update</Button> <Link to='../..' relative='path' className='btn btn-danger'>Cancel</Link></> :
+        <><Button variant="primary" type="submit" disabled={waiting}>Add</Button> <Link to='..' relative='path' className='btn btn-danger'>Cancel</Link></>
+      }
     </Form>
     </>
   );

@@ -80,6 +80,40 @@ app.get('/api/pages/:id', async(req, res) => {
   }
 });
 
+// POST /api/addPage
+app.post('/api/addPage', [
+  check('title').notEmpty(),
+  check('author').notEmpty(),
+  check('date').notEmpty()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+
+  const newPage = req.body;
+
+  try {
+    const id = await dao.addPage(newPage);
+    res.status(201).location(id).json(id).end();
+  } catch(e) {
+    console.error(`ERROR: ${e.message}`);
+    res.status(503).json({error: 'Impossible to create the page.'});
+  }
+});
+
+// DELETE /api/deletePage
+app.delete('/api/deletePage', async (req, res) => {
+  const id = req.body.id
+
+  try {
+    await dao.deletePage(id);
+    res.status(200).end(); 
+  } catch(e) {
+    res.status(503).json({'error': `Impossible to delete page #${id}.`});
+  }
+})
+
 // GET /api/pages/<id>/blocks
 app.get('/api/pages/:id/blocks', async (req, res) => {
   try {
@@ -112,26 +146,24 @@ app.post('/api/pages/:id/blocks', [
   }
 });
 
-// PUT /api/edit/<id>
-app.put('/api/answers/:id', [
-  check('text').notEmpty(),
-  check('author').notEmpty(),
-  check('score').isNumeric(),
-  check('date').isDate({format: 'YYYY-MM-DD', strictMode: true})
+// PUT /api/editBlock/<id>
+app.put('/api/editBlock/:id', [
+  check('type').notEmpty(),
+  check('text').notEmpty()
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({errors: errors.array()});
-  }vcccccwx
+  }
 
-  const answerToUpdate = req.body;
-  const answerId = req.params.id;
+  const blockToUpdate = req.body;
+  const blockId = req.params.id;
 
   try {
-    await dao.updateAnswer(answerToUpdate, answerId);
+    await dao.updateBlock(blockToUpdate, blockId);
     res.status(200).end();
   } catch {
-    res.status(503).json({'error': `Impossible to update answer #${answerId}.`});
+    res.status(503).json({'error': `Impossible to update block #${blockId}.`});
   }
 });
 

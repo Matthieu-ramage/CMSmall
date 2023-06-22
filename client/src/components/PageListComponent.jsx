@@ -1,7 +1,9 @@
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import API from '../API';
 
 export default function PageList(props) {
+
   return (
     <>
       <Row>
@@ -17,6 +19,8 @@ export default function PageList(props) {
           }
         </dl>
       </Row>
+
+      <Link to='addPage' className='btn btn-success' role='button'>Add Page</Link>
     </>
   );
 }
@@ -24,13 +28,25 @@ export default function PageList(props) {
 function PageRow(props) {
   const pageStyle = {
     border: "1px solid",
-    marginBottom: "0.5rem"
+    marginBottom: "0.5rem",
+    display: "flex",
+    flexDirection: "row"
   };
+  
+  const deletePage = (id) => {
+    return API.deletePage(id);
+  };
+
   return (
     <div style={pageStyle}>
-      <dt>Page #{props.page.id}: <Link to={`/pages/${props.page.id}`}>{props.page.title}</Link></dt>
-      <div>Authored by {props.page.author} on {props.page.date.format('YYYY-MM-DD')}</div>
-      <PageStatus date={props.page.publication_date}/>
+      <div style={{flexDirection: "column"}}>
+        <dt>Page #{props.page.id}: <Link to={`/pages/${props.page.id}`}>{props.page.title}</Link></dt>
+        <div>Authored by {props.page.author} on {props.page.date.format('YYYY-MM-DD')}</div>
+        <PageStatus date={props.page.publication_date}/>
+      </div>
+      <button style = {{right: "20px", marginTop: "20px", position: "absolute"}} onClick= {() => deletePage(props.page.id)} className='btn btn-danger' role='button' data-toggle="tooltip" title="Delete">
+          Delete
+        </button>
     </div>
   );
 }

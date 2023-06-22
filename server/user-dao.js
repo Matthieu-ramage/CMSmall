@@ -16,14 +16,10 @@ exports.getUser = (email, password) => {
       else {
         const user = {id: row.id, username: row.email, name: row.name, role: row.role};
         
-        crypto.scrypt(password, row.salt, 32, function(err, hashedPassword) {
-          if (err) reject(err);
-          console.log(row.password, Buffer.from(row.password,'hex'), hashedPassword, hashedPassword.toString('hex'));
-          if(!crypto.timingSafeEqual(Buffer.from(row.password,'hex'), hashedPassword))
+        if(!crypto.timingSafeEqual(Buffer.from(row.password,'hex'), Buffer.from(password),'hex'))
             resolve(false);
           else
             resolve(user);
-        });
       }
     });
   });
