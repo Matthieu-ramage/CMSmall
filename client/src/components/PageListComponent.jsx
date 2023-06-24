@@ -32,9 +32,12 @@ export default function PageList(props) {
     function IsTheAuthor(props) {
       if (props.loggedIn && props.page.author == props.user.name) {
         return (
-          <button style = {{right: "20px", marginTop: "20px", position: "absolute"}} onClick= {() => deletePage(props.page.id)} className='btn btn-danger' role='button' data-toggle="tooltip" title="Delete">
-              Delete
-            </button>
+          <div style = {{right: "20px", marginTop: "20px", position: "absolute"}}>
+            <Link to={`/pages/${props.page.id}/updatePage`} state={props.page.serialize()} className='btn btn-primary' role='button'  style = {{marginRight:"5px"}}><i className='bi bi-pencil-square'></i></Link>
+            <button onClick= {() => deletePage(props.page.id)} className='btn btn-danger' role='button' data-toggle="tooltip" title="Delete">
+                Delete
+              </button>
+          </div>
         )
       }
     }
@@ -73,7 +76,9 @@ export default function PageList(props) {
     return (
     <dl> 
       {props.pages.map((p) => <PageRow page={p} key={p.id} loggedIn={props.loggedIn} user={props.user}/>)}
+      <Link to='addPage' className='btn btn-success' role='button'>Add Page</Link>
     </dl>
+    
     )
   }
 
@@ -100,8 +105,7 @@ export default function PageList(props) {
             <PagesNotLoggedIn pages={pages} loggedIn={props.loggedIn} user={props.user}/>
           }
       </Row>
-
-      <Link to='addPage' className='btn btn-success' role='button'>Add Page</Link>
+      
     </>
   );
 }

@@ -29,6 +29,20 @@ const addPage = async (page) => {
   }
 }
 
+const updatePage = async (page) => {
+  const response = await fetch(`${SERVER_URL}/api/editPage/${page.id}`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title: page.title, publication_date: page.publication_date})
+  });
+
+  if(!response.ok) {
+    const errMessage = await response.json();
+    throw errMessage;
+  }
+  else return null;
+}
+
 const deletePage = async (id) => {
     const response = await fetch(SERVER_URL + '/api/deletePage', {
       method: 'DELETE',
@@ -80,6 +94,19 @@ const updateBlock = async (block) => {
   else return null;
 }
 
+const deleteBlock = async (id) => {
+  const response = await fetch(SERVER_URL + '/api/deleteBlock', {
+    method: 'DELETE',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id: id})
+  })
+  if(!response.ok) {
+    const errMessage = await response.json();
+    throw errMessage;
+  }
+  else return null;
+}
+
 const logIn = async (credentials) => {
   const response = await fetch(SERVER_URL + '/api/sessions', {
     method: 'POST',
@@ -120,5 +147,5 @@ const logOut = async() => {
     return null;
 }
 
-const API = {getPages, addPage, deletePage, getBlock, addBlock, updateBlock, logIn, logOut, getUserInfo};
+const API = {getPages, addPage, updatePage, deletePage, getBlock, addBlock, updateBlock, deleteBlock, logIn, logOut, getUserInfo};
 export default API;

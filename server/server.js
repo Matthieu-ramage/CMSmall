@@ -102,6 +102,26 @@ app.post('/api/addPage', [
   }
 });
 
+// PUT /api/editPage/<id>
+app.put('/api/editPage/:id', [
+  check('title').notEmpty()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+
+  const updatedPage = req.body;
+
+  try {
+    const id = await dao.updatePage(updatedPage, req.params.id);
+    res.status(201).location(id).end();
+  } catch(e) {
+    console.error(`ERROR: ${e.message}`);
+    res.status(503).json({error: 'Impossible to update the page.'});
+  }
+});
+
 // DELETE /api/deletePage
 app.delete('/api/deletePage', async (req, res) => {
   const id = req.body.id
@@ -166,6 +186,18 @@ app.put('/api/editBlock/:id', [
     res.status(503).json({'error': `Impossible to update block #${blockId}.`});
   }
 });
+
+// DELETE /api/deleteBlock
+app.delete('/api/deleteBlock', async (req, res) => {
+  const id = req.body.id
+
+  try {
+    await dao.deleteBlock(id);
+    res.status(200).end(); 
+  } catch(e) {
+    res.status(503).json({'error': `Impossible to delete block #${id}.`});
+  }
+})
 
 // POST /api/sessions
 app.post('/api/sessions', function(req, res, next) {

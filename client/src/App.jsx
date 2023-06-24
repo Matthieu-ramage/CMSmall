@@ -6,6 +6,7 @@ import PageList from './components/PageListComponent';
 import SinglePage from './components/SinglePageComponent';
 import BlockForm from './components/BlockFormComponent';
 import PageForm from './components/PageFormComponent';
+import UpdatePage from './components/UpdatePageComponent';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import API from './API';
@@ -71,7 +72,9 @@ function App() {
             <Route index 
               element={<PageList pages={pages} loggedIn={loggedIn} user={user}/> } />
             <Route path='pages/:pageId' 
-              element={<SinglePage pages={pages} loggedIn={loggedIn}/> } />
+              element={<SinglePage pages={pages} loggedIn={false}/> } />
+            <Route path='pages/:pageId/updatePage' 
+              element={<UpdatePage pages={pages} loggedIn={loggedIn}/> } />
             <Route path='pages/:pageId/addBlock' 
               element={<BlockForm />} />
             <Route path='pages/:pageId/editBlock/:blockId' 

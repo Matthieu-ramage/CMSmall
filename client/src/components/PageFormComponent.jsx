@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { Block, Page } from '../PageAndBlockModels';
+import { Page } from '../PageAndBlockModels';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../API';
 
@@ -18,11 +18,15 @@ function PageForm(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // create a new page
         const page = new Page(id, title, author, date, publication_date);
-        setWaiting(true);
-        const newId = await API.addPage(page)
-        navigate(`/addPage/${newId}/addBlock`);
+        if(editablePage) {
+          API.updatePage(page);
+        } else {
+          setWaiting(true);
+          const newId = await API.addPage(page)
+          navigate(`/addPage/${newId}/addBlock`);
+        }
+        
         
         
       }
@@ -34,21 +38,27 @@ function PageForm(props) {
             <Form.Label>Title</Form.Label>
             <Form.Control type="text" required={true} value={title} onChange={(event) => setTitle(event.target.value)}></Form.Control>
           </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label>Author</Form.Label>
-            <Form.Control type="text" required={true} value={author} onChange={(event) => setAuthor(event.target.value)}></Form.Control>
-          </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label>Date</Form.Label>
-            <Form.Control type="text" required={true} value={date} onChange={(event) => setDate(event.target.value)}></Form.Control>
-          </Form.Group>
+          { editablePage ?
+             <></> : 
+             <div>
+              <Form.Group className='mb-3'>
+                <Form.Label>Author</Form.Label>
+                <Form.Control type="text" required={true} value={author} onChange={(event) => setAuthor(event.target.value)}></Form.Control>
+              </Form.Group> 
+              <Form.Group className='mb-3'>
+                <Form.Label>Date</Form.Label>
+                <Form.Control type="text" required={true} value={date} onChange={(event) => setDate(event.target.value)}></Form.Control>
+              </Form.Group>
+            </div>
+            
+          }
           <Form.Group className='mb-3'>
             <Form.Label>Publication Date</Form.Label>
             <Form.Control type="text" value={publication_date} onChange={(event) => setPublicationDate(event.target.value)}></Form.Control>
           </Form.Group>
         
         {editablePage ? 
-            <><Button variant="primary" type="submit">Update</Button> <Link to='../..' relative='path' className='btn btn-danger'>Cancel</Link></> :
+            <><Button variant="primary" type="submit">Update</Button> <Link to='../../..' relative='path' className='btn btn-danger'>Cancel</Link></> :
             <><Button variant="primary" type="submit" disabled={waiting}>Create</Button> <Link to='..' relative='path' className='btn btn-danger'>Cancel</Link></>
           }
         </Form>
