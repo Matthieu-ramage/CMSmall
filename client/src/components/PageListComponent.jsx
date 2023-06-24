@@ -72,7 +72,6 @@ export default function PageList(props) {
   }
 
   function PagesLoggedIn(props) {
-    const today=Date.now();
     return (
     <dl> 
       {props.pages.map((p) => <PageRow page={p} key={p.id} loggedIn={props.loggedIn} user={props.user}/>)}

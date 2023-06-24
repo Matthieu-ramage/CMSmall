@@ -8,7 +8,7 @@ import PageForm from './PageFormComponent';
 function UpdatePage(props) {
   // get the questionId from the URL to retrieve the right question and its answers
   const params = useParams();
-  const page = props.pages[params.pageId-1];
+  const page = props.pages.filter((p) => p.id == params.pageId)[0];
   const [blocks, setBlocks] = useState([]);
   
   const getBlocks = async () => {

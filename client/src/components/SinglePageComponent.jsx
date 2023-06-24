@@ -4,7 +4,7 @@ import Blocks from './BlockComponent';
 
 function SinglePage(props) {
   const params = useParams();
-  const page = props.pages[params.pageId-1];
+  const page = props.pages.filter((p) => p.id == params.pageId)[0];
   
   return (
     <>
