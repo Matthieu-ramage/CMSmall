@@ -123,7 +123,7 @@ exports.listBlocksOf = (pageId) => {
   // delete an existing block
   exports.deleteBlock = (blockId) => {
     return new Promise ((resolve, reject) => {
-      const sql = 'DELETE block WHERE id=?';
+      const sql = 'DELETE FROM block WHERE id=?';
       db.run(sql, [blockId], function(err) {
         if(err) {
           console.log(err);

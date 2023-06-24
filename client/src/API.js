@@ -1,5 +1,6 @@
 import { Page } from './PageAndBlockModels.js';
 import { Block } from './PageAndBlockModels.js';
+import { User } from './PageAndBlockModels.js';
 const SERVER_URL = 'http://localhost:3001';
 
 const getPages = async () => {
@@ -22,7 +23,6 @@ const addPage = async (page) => {
   })
   const id = await response.json();
   if(response.ok) {
-    console.log(id);
     return id;
   } else {
     throw id;
@@ -32,7 +32,7 @@ const addPage = async (page) => {
 const deletePage = async (id) => {
     const response = await fetch(SERVER_URL + '/api/deletePage', {
       method: 'DELETE',
-      haeders: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({id: id})
     })
     if(!response.ok) {
@@ -91,7 +91,7 @@ const logIn = async (credentials) => {
   });
   if(response.ok) {
     const user = await response.json();
-    return user;
+    return new User(user.id, user.username, user.name, user.role);
   }
   else {
     const errDetails = await response.text();
@@ -105,7 +105,7 @@ const getUserInfo = async () => {
   });
   const user = await response.json();
   if (response.ok) {
-    return user;
+    return new User(user.id, user.username, user.name, user.role);
   } else {
     throw user;  // an object with the error coming from the server
   }

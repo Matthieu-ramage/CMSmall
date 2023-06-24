@@ -10,11 +10,13 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import API from './API';
 import { LoginForm } from './components/AuthComponent';
+import { User } from './PageAndBlockModels';
 
 function App() {
   const [pages, setPages] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState('');
+  const [user, setUser] = useState(new User('','','',''));
 
   useEffect(()=> {
     // get all the pages from API
@@ -27,7 +29,8 @@ function App() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      await API.getUserInfo(); // we have the user info here
+      const user = await API.getUserInfo(); // we have the user info here
+      setUser(user);
       setLoggedIn(true);
     };
     checkAuth();
@@ -36,6 +39,7 @@ function App() {
   const handleLogin = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
+      setUser(user);
       setLoggedIn(true);
       setMessage({msg: `Welcome, ${user.name}!`, type: 'success'});
     }catch(err) {
@@ -65,7 +69,7 @@ function App() {
               </Container>
             </>} >
             <Route index 
-              element={ <PageList pages={pages}/> } />
+              element={<PageList pages={pages} loggedIn={loggedIn} user={user}/> } />
             <Route path='pages/:pageId' 
               element={<SinglePage pages={pages} loggedIn={loggedIn}/> } />
             <Route path='pages/:pageId/addBlock' 

@@ -13,7 +13,7 @@ function BlockForm(props) {
   const [waiting, setWaiting] = useState(false);
   const [selectedType, setSelectedType] = useState('');
   const [id, setId] = useState(editableBlock ? editableBlock.id : -1);
-  const [type, setType] = useState(editableBlock ? editableBlock.type : '');
+  const [type, setType] = useState(editableBlock ? editableBlock.type : 'header');
   const [text, setText] = useState(editableBlock ? editableBlock.text : '');
 
   const handleSubmit = (event) => {

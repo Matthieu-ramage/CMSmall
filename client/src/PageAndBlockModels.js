@@ -40,4 +40,11 @@ function Page(id, title, author, date, publication_date) {
   }
 }
 
-export { Block, Page };
+function User(userId, username, name, role) {
+  this.userId = userId;
+  this.username = username;
+  this.name = name;
+  this.role = role;
+}
+
+export { Block, Page, User };
